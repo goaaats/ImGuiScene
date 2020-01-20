@@ -1,4 +1,4 @@
-﻿using ImGuiNET;
+using ImGuiNET;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -18,7 +18,7 @@ namespace ImGuiScene
         private static IntPtr _wndProcPtr;
         private static IntPtr _oldWndProcPtr;
         private static ImGuiMouseCursor _oldCursor = ImGuiMouseCursor.None;
-        private static IntPtr[] _cursors;
+        public static IntPtr[] Cursors;
         private static bool _mouseCapturedLastFrame = false;
 
         public static void Init(IntPtr hWnd)
@@ -66,15 +66,15 @@ namespace ImGuiScene
             io.KeyMap[(int)ImGuiKey.Y] = (int)VirtualKey.Y;
             io.KeyMap[(int)ImGuiKey.Z] = (int)VirtualKey.Z;
 
-            _cursors = new IntPtr[8];
-            _cursors[(int)ImGuiMouseCursor.Arrow] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_ARROW);
-            _cursors[(int)ImGuiMouseCursor.TextInput] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_IBEAM);
-            _cursors[(int)ImGuiMouseCursor.ResizeAll] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZEALL);
-            _cursors[(int)ImGuiMouseCursor.ResizeEW] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZEWE);
-            _cursors[(int)ImGuiMouseCursor.ResizeNS] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZENS);
-            _cursors[(int)ImGuiMouseCursor.ResizeNESW] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZENESW);
-            _cursors[(int)ImGuiMouseCursor.ResizeNWSE] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZENWSE);
-            _cursors[(int)ImGuiMouseCursor.Hand] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_HAND);
+            Cursors = new IntPtr[8];
+            Cursors[(int)ImGuiMouseCursor.Arrow] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_ARROW);
+            Cursors[(int)ImGuiMouseCursor.TextInput] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_IBEAM);
+            Cursors[(int)ImGuiMouseCursor.ResizeAll] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZEALL);
+            Cursors[(int)ImGuiMouseCursor.ResizeEW] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZEWE);
+            Cursors[(int)ImGuiMouseCursor.ResizeNS] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZENS);
+            Cursors[(int)ImGuiMouseCursor.ResizeNESW] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZENESW);
+            Cursors[(int)ImGuiMouseCursor.ResizeNWSE] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_SIZENWSE);
+            Cursors[(int)ImGuiMouseCursor.Hand] = Win32.LoadCursor(IntPtr.Zero, Cursor.IDC_HAND);
         }
 
         public static void Shutdown()
@@ -95,7 +95,7 @@ namespace ImGuiScene
                 _platformNamePtr = IntPtr.Zero;
             }
 
-            _cursors = null;
+            Cursors = null;
         }
 
         public static void Disable()
@@ -155,10 +155,10 @@ namespace ImGuiScene
 
             // TODO: disabled due to seemingly causing framerate issues and flicker when vsync is disabled
             // hacky attempt to make cursors work how I think they 'should'
-            //if (io.WantCaptureMouse || io.MouseDrawCursor)
-            //{
-            //    UpdateMouseCursor();
-            //}
+            if (io.WantCaptureMouse || io.MouseDrawCursor)
+            {
+                UpdateMouseCursor();
+            }
         }
 
         private static void UpdateMousePos()
@@ -201,9 +201,9 @@ namespace ImGuiScene
             }
             else
             {
-                Win32.SetCursor(_cursors[(int)cur]);
+                Win32.SetCursor(Cursors[(int)cur]);
             }
-
+            /*
             if (io.WantCaptureMouse && !_mouseCapturedLastFrame)
             {
                 Win32.ShowCursor(false);
@@ -212,6 +212,7 @@ namespace ImGuiScene
             {
                 Win32.ShowCursor(true);
             }
+            */
             _mouseCapturedLastFrame = io.WantCaptureMouse;
 
             return true;
